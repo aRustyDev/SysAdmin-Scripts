@@ -1,1 +1,3 @@
-# This is just a sub-repo for my scripts that arent finished yet.
+# Test Scripts Purpose
+
+This is just a sub-repo for my scripts that arent finished yet.
