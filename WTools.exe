@@ -1,0 +1,271 @@
+@echo off
+
+color 0a
+
+mode con: cols=60 lines=50
+
+title W Account Tools
+
+:home
+
+cls
+
+echo.
+
+ echo Task List:
+
+echo ==========
+
+echo.
+
+echo ---------------------------------------------------
+
+echo --------------------ESD Tools ---------------------
+
+echo ---------------------------------------------------
+
+echo.
+
+echo 1) Get Computer Information (Get computer info)
+
+echo 2) Win10 Remote Admin Fix (For entering Admin)
+
+echo 3) Open Remote Control Viewer
+
+echo 4) Launch PS Script Builder
+
+echo 5) Launch PSEXEC Tools
+
+echo.
+
+echo ---------------------------------------------------
+
+echo --------------Computer Tools ----------------------
+
+echo ---------------------------------------------------
+
+echo.
+
+echo 6) Open ADUC (Active Directory Users and Computers)
+
+echo 7) Open Registry Editor
+
+echo 8) Open Event Viewer
+
+ echo 9) Open Services
+
+echo 10) Open Computer Managment
+
+ echo.
+
+ echo ---------------------------------------------------
+
+echo ------------------ Command Lines ------------------
+
+echo ---------------------------------------------------
+
+echo.
+
+echo 11) Open Command Prompt
+
+ echo 12) Open Powershell
+
+echo 13) Open Powershell_ISE
+
+ echo.
+
+echo ---------------------------------------------------
+
+echo --------------- Individual Fixes ------------------
+
+echo ---------------------------------------------------
+
+echo.
+
+echo 14) Axway Validator Install fix
+
+echo 15) Java Exceptions Filecopy
+
+echo.
+
+ 
+
+ 
+
+                set /p Open=Type option:
+
+                if "%Open%" == "1" Call :CIInfo
+
+                if "%Open%" == "2" Call :Win10remote
+
+                if "%Open%" == "3" Call :SCCM_RCViewer
+
+                if "%Open%" == "4" Call :PSScriptBuilder
+
+                if "%Open%" == "5" Call :PSTools
+
+                if "%Open%" == "6" Call :ADUC
+
+                if "%Open%" == "7" Call :RegEdit
+
+                if "%Open%" == "8" Call :EventViewer
+
+                if "%Open%" == "9" Call :Services
+
+                if "%Open%" == "10" Call :ComputerManagement
+
+                if "%Open%" == "11" Call :CMD
+
+                if "%Open%" == "12" Call :Powershell
+
+                if "%Open%" == "13" Call :Powershell_ISE
+
+                if "%Open%" == "14" Call :Axway
+
+                if "%Open%" == "15" Call :JavaExceptions
+
+ 
+
+ 
+
+:ADUC
+
+                Start C:\Windows\system32\dsa.msc
+
+                Call :home
+
+:MMC
+
+               Start C:\Windows\System32\mmc.exe
+
+                Call :home
+
+ 
+
+:PSScriptBuilder
+
+                Start C:\Users\adam.c.smith.ctr\Desktop\PSScriptBuilder.bat
+
+                Call: home
+
+ 
+
+:RegEdit
+
+               Start C:\Windows\regedit.exe
+
+                taskkill /im regedit.exe
+
+                Call :home
+
+ 
+
+ 
+
+:EventViewer
+
+               Start C:\Windows\System32\Eventvwr.msc
+
+                Call :home
+
+ 
+
+ 
+
+:Services
+
+               Start Services.msc
+
+                Call :home
+
+ 
+
+ 
+
+:ComputerManagement
+
+               Start C:\Windows\System32\compmgmt.msc
+
+                Call :home
+
+ 
+
+ 
+
+:CMD
+
+               Start C:\Windows\System32\cmd.exe
+
+                Call :home
+
+ 
+
+ 
+
+:Powershell
+
+               Start C:\windows\system32\WindowsPowerShell\v1.0\PowerShell.exe
+
+                Call :home
+
+ 
+
+ 
+
+:PowerShell_ISE
+
+               Start C:\windows\system32\WindowsPowerShell\v1.0\PowerShell_ISE.exe
+
+                Call :home
+
+ 
+
+ 
+
+:SCCM_RCViewer
+
+                Start C:\"Program Files (x86)"\ConfigMgr\bin\i386\CmRcViewer.exe
+
+                Call :home
+
+ 
+
+ 
+
+:CIInfo
+
+               Start cmd /k Call "\\mcusquanfs41\MCCOG_Command\Work Files - S3\S3_Current_Operations\_Enterprise Service Desk\1 _ ESD\TOOLS\ESD Tools and Scripts\WScripts\getcomputerinfo.bat"
+
+                Call :home
+
+ 
+
+:Win10remote
+
+               Start cmd /k Call "\\mcusquanfs41\MCCOG_Command\Work Files - S3\S3_Current_Operations\_Enterprise Service Desk\1 _ ESD\TOOLS\ESD Tools and Scripts\WScripts\WIN10RemoteAdminFix.bat"
+
+                Call :home
+
+ 
+
+:PSTools
+
+               Start cmd /k Call "\\mcusquanfs41\MCCOG_Command\Work Files - S3\S3_Current_Operations\_Enterprise Service Desk\1 _ ESD\TOOLS\ESD Tools and Scripts\PS_tools.cmd"
+
+                Call :home
+
+ 
+
+:Axway
+
+               Start cmd /k Call "\\mcusquanfs41\MCCOG_Command\Work Files - S3\S3_Current_Operations\_Enterprise Service Desk\1 _ ESD\TOOLS\ESD Tools and Scripts\WScripts\DVAxway Remote Install.bat"
+
+                Call :home
+
+ 
+
+:JavaExceptions
+
+               Start cmd /k Call "\\mcusquanfs41\MCCOG_Command\Work Files - S3\S3_Current_Operations\_Enterprise Service Desk\1 _ ESD\TOOLS\ESD Tools and Scripts\WScripts\Java Exceptions Filecopy.bat"
+
+                Call :home
