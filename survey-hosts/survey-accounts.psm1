@@ -1,7 +1,6 @@
 function survey-accounts {
+    [CmdletBinding()]
     param (
-        [CmdletBinding]
-        
         # Parameter help description
         [Parameter()]
         [string[]]

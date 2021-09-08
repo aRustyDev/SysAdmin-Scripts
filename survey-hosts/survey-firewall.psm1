@@ -1,7 +1,6 @@
 function survey-firewall {
+    [CmdletBinding()]
     param (
-        [CmdletBinding]
-
         # Parameter help description
         [Parameter()]
         [string[]]

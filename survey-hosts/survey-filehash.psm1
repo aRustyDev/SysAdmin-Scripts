@@ -1,7 +1,6 @@
 function survey-filehash {
+    [CmdletBinding()]
     param (
-        [CmdletBinding]
-
         # Parameter help description
         [Parameter()]
         [string[]]

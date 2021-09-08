@@ -1,7 +1,6 @@
 function survey-services {
+    [CmdletBinding()]
     param (
-        [CmdletBinding]
-        
         # Parameter help description
         [Parameter()]
         [string[]]
@@ -17,7 +16,7 @@ function survey-services {
     }
     process {
         Invoke-Command -ComputerName $targets -Credential $creds -ScriptBlock {
-            Get-wmiobject win32_useraccount | Select-Object AccountType, Name, LocalAccount, Domain, SID
+            Get-wmiobject -class win32_service | Select-Object Name, PathName, State, StartMode, StartName
         }
     }
     

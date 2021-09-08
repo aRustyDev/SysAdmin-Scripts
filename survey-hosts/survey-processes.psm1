@@ -1,7 +1,6 @@
 function survey-processes {
+    [CmdletBinding()]
     param (
-        [CmdletBinding]
-
         # Parameter help description
         [Parameter()]
         [string[]]
