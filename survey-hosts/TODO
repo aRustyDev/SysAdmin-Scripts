@@ -1,3 +1,12 @@
 * fn : idid : Add 'whatif' switch
 * fn : idid : fill in $setup var
 * fn : idid : import $setup var from config file
+* fn : idid : review and optimize all function vars
+* fn : idid : remove or implement checking/error handling for all external variables
+
+* add psm : survey-accounts : add base version
+* add psm : survey-processes : add base version
+* add psm : survey-firewall : add base version
+* add psm : survey-autoruns : add base version
+* add psm : survey-services : add base version
+* add psm : survey-filehash : add base version

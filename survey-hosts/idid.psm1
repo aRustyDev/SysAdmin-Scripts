@@ -1,4 +1,10 @@
 function idid {
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $ParameterName
+    )
     begin{
         #Check for $env:vars used
     }
