@@ -2,7 +2,7 @@ function survey-accounts {
     [CmdletBinding()]
     param (
         # Parameter help description
-        [Parameter()]
+        [Parameter(Mandatory=$true)]
         [System.Object[]]
         $targets,
 

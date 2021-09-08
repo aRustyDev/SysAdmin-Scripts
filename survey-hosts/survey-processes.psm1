@@ -2,7 +2,7 @@ function survey-processes {
     [CmdletBinding()]
     param (
         # Parameter help description
-        [Parameter()]
+        [Parameter(Mandatory=$true)]
         [string[]]
         $targets,
 
