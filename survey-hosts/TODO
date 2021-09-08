@@ -1,0 +1,3 @@
+* fn : idid : Add 'whatif' switch
+* fn : idid : fill in $setup var
+* fn : idid : import $setup var from config file
