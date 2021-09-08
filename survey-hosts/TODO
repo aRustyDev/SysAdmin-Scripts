@@ -4,7 +4,6 @@
 * fn : idid : review and optimize all function vars
 * fn : idid : remove or implement checking/error handling for all external variables
 
-* add psm : survey-accounts : add base version
 * add psm : survey-processes : add base version
 * add psm : survey-firewall : add base version
 * add psm : survey-autoruns : add base version
