@@ -3,6 +3,8 @@
 * Update psm : idid : import $setup var from config file
 * Update psm : idid : review and optimize all function vars
 * Update psm : idid : remove or implement checking/error handling for all external variables
+* Update psm : survey-firewall : Change $data var and new-object to one set of instructions via PSCustomObject (Check if OS Version will cause conflicts)
+* Update psm : survey-autoruns : Change $data var and new-object to one set of instructions via PSCustomObject (Check if OS Version will cause conflicts)
 
 * add psm : survey-processes : add base version
 * add psm : survey-firewall : add base version
