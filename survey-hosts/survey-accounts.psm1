@@ -47,4 +47,7 @@ function survey-accounts {
             Get-wmiobject win32_useraccount | Select-Object AccountType, Name, LocalAccount, Domain, SID
         }
     }
+    end {
+        # Try returning some value
+    }
 }

@@ -81,5 +81,7 @@ function survey-firewall {
                 } 
         }
     }
-    
+    end {
+        # Try returning some value
+    }
 }

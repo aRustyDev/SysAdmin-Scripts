@@ -57,5 +57,8 @@ function survey-filehash {
             }
         }
     }
+    end {
+        # Try returning some value
+    }
     
 }

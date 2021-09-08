@@ -47,5 +47,7 @@ function survey-services {
             Get-wmiobject -class win32_service | Select-Object Name, PathName, State, StartMode, StartName
         }
     }
-    
+    end {
+        # Try returning some value
+    }
 }

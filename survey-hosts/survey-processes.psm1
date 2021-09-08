@@ -61,5 +61,7 @@ function survey-processes {
                 } 
         }
     }
-    
+    end {
+        # Try returning some value
+    }
 }

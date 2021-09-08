@@ -85,4 +85,7 @@ function survey-autoruns {
             }
         }
     }
+    end {
+        # Try returning some value
+    }
 }
