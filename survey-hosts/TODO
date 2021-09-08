@@ -1,11 +1,18 @@
-* fn : idid : Add 'whatif' switch
-* fn : idid : fill in $setup var
-* fn : idid : import $setup var from config file
-* fn : idid : review and optimize all function vars
-* fn : idid : remove or implement checking/error handling for all external variables
+* Update psm : idid : Add 'whatif' switch
+* Update psm : idid : fill in $setup var
+* Update psm : idid : import $setup var from config file
+* Update psm : idid : review and optimize all function vars
+* Update psm : idid : remove or implement checking/error handling for all external variables
 
 * add psm : survey-processes : add base version
 * add psm : survey-firewall : add base version
 * add psm : survey-autoruns : add base version
 * add psm : survey-services : add base version
 * add psm : survey-filehash : add base version
+
+* Update psm : survey-accounts : change function/module name to fit proper verb-noun form
+* Update psm : survey-processes : change function/module name to fit proper verb-noun form
+* Update psm : survey-firewall : change function/module name to fit proper verb-noun form
+* Update psm : survey-autoruns : change function/module name to fit proper verb-noun form
+* Update psm : survey-services : change function/module name to fit proper verb-noun form
+* Update psm : survey-filehash : change function/module name to fit proper verb-noun form
