@@ -2,7 +2,7 @@ function survey-accounts {
     [CmdletBinding()]
     param (
         # Parameter help description
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
         [System.Object[]]
         $targets,
 

@@ -2,7 +2,7 @@ function survey-filehash {
     [CmdletBinding()]
     param (
         # Parameter help description
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
         [string[]]
         $targets,
 
