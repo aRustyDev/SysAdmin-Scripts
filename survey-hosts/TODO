@@ -9,12 +9,6 @@
 * Update psm : survey-* : Find way to explicitly match each "-subnet" & "-os" to each other, avoid case like "-subnet -param2 xxx"
 * Update psm : survey-* : Consider setting default value for $targets var, compare against setting in begin{} 
 
-* add psm : survey-processes : add base version
-* add psm : survey-firewall : add base version
-* add psm : survey-autoruns : add base version
-* add psm : survey-services : add base version
-* add psm : survey-filehash : add base version
-
 * Update psm : survey-accounts : change function/module name to fit proper verb-noun form
 * Update psm : survey-processes : change function/module name to fit proper verb-noun form
 * Update psm : survey-firewall : change function/module name to fit proper verb-noun form
