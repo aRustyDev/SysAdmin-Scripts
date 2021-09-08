@@ -9,7 +9,19 @@ function survey-services {
         # Parameter help description
         [Parameter()]
         [pscredential]
-        $creds
+        $creds,
+
+        # Parameter help description
+        [Parameter()]
+        [ValidateSet("2012R2","Win10","Win7","vista","XP")]
+        [string[]]
+        $os,
+
+        # Parameter help description
+        [Parameter()]
+        [ValidateSet("Vault","Shield","Rep","C2")] # Need to find way to pull this from config File
+        [string[]]
+        $subnet
     )
     begin {
         if(!$creds){ $creds = Get-Credential}
