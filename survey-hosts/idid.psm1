@@ -10,7 +10,7 @@ function idid {
     }
     process{
         $targets = Import-Csv -Path $env:WINHOSTS_CSV
-        $setup = @("","","","","")
+        #$setup = @("","","","","")
 
         $i = 0
         $cmd, $subnet, $os = ""
