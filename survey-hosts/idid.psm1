@@ -27,6 +27,7 @@ function idid {
             foreach ($key in $envirovars.Keys){
                 Write-Host "`$env:$key = $([System.Environment]::GetEnvironmentVariable($key))"
             }
+            # TODO :: Show any depencies
             exit
         }
         foreach ($key in $envirovars.Keys){
@@ -41,10 +42,7 @@ function idid {
                     if([System.Environment]::GetEnvironmentVariable($key) -ne (Invoke-Expression $envirovars.$key)){ # Update $env:Var if Param doesnt match
                         [System.Environment]::SetEnvironmentVariable($var, (Invoke-Expression $envirovars.$key))
                     }
-                }else { # Sets local param with $env:VARNAME
-                    $envirovars.$key = [System.Environment]::GetEnvironmentVariable($key)
                 }
-
             }catch [varnotfound]{
                 $update = Read-Host -Prompt "`$env:$var not found : Do you want to set? (y/n)"
                 if($update.ToLower() -eq "y"){# the user wants to 
@@ -56,6 +54,8 @@ function idid {
                 }
             }catch{
                 Write-Host "Something broke in '$($MyInvocation.MyCommand)' 'Begin' block"
+            }finally{
+                Set-Variable -Name $envirovars.$key -Value [System.Environment]::GetEnvironmentVariable($key)
             }
         }
     }
@@ -134,12 +134,16 @@ function idid {
                     }
                     <#
                     "json" { # Still in testing
-                        if(Test-Path -Path "$oplogdir\opnotes.json"){ #If the file exists, grab it, add to it, and write it back
+                        try{
                             $json_obj = Get-Content -Path "$oplogdir\opnotes.json" -Raw | ConvertFrom-Json
                             $json_obj += $cmd_obj
-                            ConvertTo-Json -InputObject $json_obj -Compress | Out-File -FilePath "$oplogdir\opnotes.json" -Encoding ascii
-                        }else{ # Otherwise, make a new file
-                            ConvertTo-Json -InputObject $json_obj -Compress | Out-File -FilePath "$oplogdir\opnotes.json" -Encoding ascii
+                            #ConvertTo-Json -InputObject $json_obj -Compress | Out-File -FilePath "$oplogdir\opnotes.json" -Encoding ascii
+                            Export-Json -InputObject $json_obj -Compress -FilePath "$oplogdir\opnotes.json" -Encoding ascii
+                        }catch{
+                            silentlycontinue
+                        }finally{
+                            #ConvertTo-Json -InputObject $json_obj -Compress | Out-File -FilePath "$oplogdir\opnotes.json" -Encoding ascii
+                            Export-Json -InputObject $json_obj -Compress -FilePath "$oplogdir\opnotes.json" -Encoding ascii
                         }
                         break
                     }
