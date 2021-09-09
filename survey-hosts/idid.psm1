@@ -23,6 +23,12 @@ function idid {
             HOSTS_CSV = "`$hosts_csv"
             OPERATORLOG_DIR = "`$oplogdir"
         }
+        if($showconfigs){
+            foreach ($key in $envirovars.Keys){
+                Write-Host "`$env:$key = $([System.Environment]::GetEnvironmentVariable($key))"
+            }
+            exit
+        }
         foreach ($key in $envirovars.Keys){
             try{#IF $env:var not set AND param is not given THEN see if the user wants to set it
                 # Key !Set && $null -> Prompt to set
@@ -78,12 +84,14 @@ function idid {
             }
             if(($null -eq $paa) -and ($arg -notin @())){
                 switch -Regex ($arg) {
-                    "nmap" { $paa = "PAA1"; break }
+                    "nmap"  { $paa = "PAA1"; break }
                     "fping" { $paa = "PAA1"; break }
+                    <#
                     "nmap" { $paa = "PAA1"; break }
                     "nmap" { $paa = "PAA1"; break }
                     "nmap" { $paa = "PAA1"; break }
                     "nmap" { $paa = "PAA1"; break }
+                    #>
                     Default {$paa = ""; break}
                 }
             }
@@ -136,13 +144,13 @@ function idid {
                         break
                     }
                     #>
-                    Default {}
+                    Default { 
+                        Write-Host "I couldn't figure out what to do with the LogFormat '$filetype', so heres your filtered targets.`n"; 
+                        return $targets; 
+                        break
+                    }
                 }
             }            
-
-            # Annotate action in Operator CSV
-                 
-
         }else{ return $targets }
     }
 }
