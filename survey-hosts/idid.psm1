@@ -11,7 +11,7 @@ function idid {
         [string]$oplogdir,
 
         [Parameter(Mandatory=$false)]
-        [validateSet("csv","txt","json")]
+        [validateSet("csv","txt"<#,"json"#>)] #JSON object handling still in testing
         [string[]]$logFormat="csv",
 
         [Parameter(Mandatory=$false)]
@@ -35,7 +35,10 @@ function idid {
                     if([System.Environment]::GetEnvironmentVariable($key) -ne (Invoke-Expression $envirovars.$key)){ # Update $env:Var if Param doesnt match
                         [System.Environment]::SetEnvironmentVariable($var, (Invoke-Expression $envirovars.$key))
                     }
+                }else { # Sets local param with $env:VARNAME
+                    $envirovars.$key = [System.Environment]::GetEnvironmentVariable($key)
                 }
+
             }catch [varnotfound]{
                 $update = Read-Host -Prompt "`$env:$var not found : Do you want to set? (y/n)"
                 if($update.ToLower() -eq "y"){# the user wants to 
@@ -45,12 +48,14 @@ function idid {
                     Write-Output "`$env:$var must be set to run '$($MyInvocation.MyCommand)'"
                     exit
                 }
+            }catch{
+                Write-Host "Something broke in '$($MyInvocation.MyCommand)' 'Begin' block"
             }
         }
     }
 
     process{
-        $targets = Import-Csv -Path $env:WINHOSTS_CSV
+        $targets = Import-Csv -Path $hosts_csv
         #$setup = @("","","","","")
 
         $i = 0
@@ -88,16 +93,12 @@ function idid {
 
     end {
         if(!$whatif){
+            
             # Write Header info for each commands output
             $out = "$(Get-Date -Format "yyyy-MM-dd @ HH:mm k") :: $($creds.Username) ran :: $cmd"
             $header = "$("~"*$out.Length)`n$out`n$("~"*$out.Length)`n|CMD Output|`n$("~"* "|CMD Output|".Length)" 
-            Out-File -InputObject $header -FilePath $env:OPERATORLOG_TXT -Append
 
-        # Write Command Output to Operator Notes
-            Invoke-Expression $cmd | Tee-Object -FilePath $env:OPERATORLOG_TXT -Append
-
-        # Annotate action in Operator CSV
-            New-Object -TypeName [PSCustomObject]@{
+            $cmd_obj = New-Object -TypeName [PSCustomObject]@{
                 dateran = if($out -match "\d\d\d\d-\d\d-\d\d"){ $Matches[0] }else{ $null }
                 time    = if($out -match "\d\d:\d\d"){ $Matches[0] }else{ $null }
                 user    = $creds.Username
@@ -108,7 +109,39 @@ function idid {
                 }else {
                     "($subnet) $($targets.ip -join ",")"
                 }
-            } | Export-Csv -Append -Path $env:OPERATORLOG_CSV
+            }
+
+            # Write to files
+            Invoke-Expression $cmd | Tee-Object -OutVariable $cmd_output;
+            foreach ($filetype in $logFormat) {
+                switch ($filetype) {
+                    "csv"  { 
+                        $cmd_obj | Export-Csv -Append -Path "$oplogdir\opnotes.csv"
+                        break
+                    }
+                    "txt"  { 
+                        Out-File -InputObject $header -FilePath "$oplogdir\opnotes.txt" -Append;
+                        Out-File -InputObject $cmd_output -FilePath "$oplogdir\opnotes.txt" -Append;
+                        break
+                    }
+                    <#
+                    "json" { # Still in testing
+                        if(Test-Path -Path "$oplogdir\opnotes.json"){ #If the file exists, grab it, add to it, and write it back
+                            $json_obj = Get-Content -Path "$oplogdir\opnotes.json" -Raw | ConvertFrom-Json
+                            $json_obj += $cmd_obj
+                            ConvertTo-Json -InputObject $json_obj -Compress | Out-File -FilePath "$oplogdir\opnotes.json" -Encoding ascii
+                        }else{ # Otherwise, make a new file
+                            ConvertTo-Json -InputObject $json_obj -Compress | Out-File -FilePath "$oplogdir\opnotes.json" -Encoding ascii
+                        }
+                        break
+                    }
+                    #>
+                    Default {}
+                }
+            }            
+
+            # Annotate action in Operator CSV
+                 
 
         }else{ return $targets }
     }
