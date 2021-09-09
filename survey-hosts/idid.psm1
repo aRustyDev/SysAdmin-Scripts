@@ -19,14 +19,22 @@ function idid {
     )
 
     begin{
-        $envirovars = @{
+        $envirovars = @{ #These link the Function Params ex:( $env:VARNAME = "`$paramVar" )
             HOSTS_CSV = "`$hosts_csv"
             OPERATORLOG_DIR = "`$oplogdir"
         }
-        foreach ($var in $envirovars){
+        foreach ($key in $envirovars.Keys){
             try{#IF $env:var not set AND param is not given THEN see if the user wants to set it
-                if((![System.Environment]::GetEnvironmentVariable($var)) -and ($null -eq (Invoke-Expression $var))){ 
+                # Key !Set && $null -> Prompt to set
+                # Key Set && Not $null -> Update
+                # Key !Set & Not $null -> Update
+                # Key set && $null -> Proceed
+                if((![System.Environment]::GetEnvironmentVariable($key)) -and ($null -eq (Invoke-Expression $envirovars.$key))){ 
                     throw varnotfound 
+                }elseif($null -ne (Invoke-Expression $envirovars.$key)) { # If the $Param isnt $null
+                    if([System.Environment]::GetEnvironmentVariable($key) -ne (Invoke-Expression $envirovars.$key)){ # Update $env:Var if Param doesnt match
+                        [System.Environment]::SetEnvironmentVariable($var, (Invoke-Expression $envirovars.$key))
+                    }
                 }
             }catch [varnotfound]{
                 $update = Read-Host -Prompt "`$env:$var not found : Do you want to set? (y/n)"
