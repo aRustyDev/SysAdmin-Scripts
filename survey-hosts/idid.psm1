@@ -1,13 +1,46 @@
 function idid {
     [CmdletBinding()]
     param (
-        [Parameter()]
-        [System.Management.Automation.SwitchParameter]
-        $ParameterName
+        [Parameter(Mandatory=$false)]
+        [Switch]$whatif,
+
+        [Parameter(Mandatory=$false)]
+        [Switch]$showconfigs,
+
+        [Parameter(Mandatory=$false)]
+        [string]$oplogdir,
+
+        [Parameter(Mandatory=$false)]
+        [validateSet("csv","txt","json")]
+        [string[]]$logFormat="csv",
+
+        [Parameter(Mandatory=$false)]
+        [string]$hosts_csv
     )
+
     begin{
-        #Check for $env:vars used
+        $envirovars = @{
+            HOSTS_CSV = "`$hosts_csv"
+            OPERATORLOG_DIR = "`$oplogdir"
+        }
+        foreach ($var in $envirovars){
+            try{#IF $env:var not set AND param is not given THEN see if the user wants to set it
+                if((![System.Environment]::GetEnvironmentVariable($var)) -and ($null -eq (Invoke-Expression $var))){ 
+                    throw varnotfound 
+                }
+            }catch [varnotfound]{
+                $update = Read-Host -Prompt "`$env:$var not found : Do you want to set? (y/n)"
+                if($update.ToLower() -eq "y"){# the user wants to 
+                    $newvar = Read-Host -Prompt "`$env:$var="
+                    [System.Environment]::SetEnvironmentVariable($var, $newvar)
+                }else{
+                    Write-Output "`$env:$var must be set to run '$($MyInvocation.MyCommand)'"
+                    exit
+                }
+            }
+        }
     }
+
     process{
         $targets = Import-Csv -Path $env:WINHOSTS_CSV
         #$setup = @("","","","","")
@@ -43,31 +76,32 @@ function idid {
             }
             $i++
         }
+    }
 
-        $out = "$(Get-Date -Format "yyyy-MM-dd @ HH:mm k") :: $($creds.Username) ran :: $cmd"
-        #$seperator = "~" * $out.Length
-        #$secondline = "|CMD Output|"
+    end {
+        if(!$whatif){
+            # Write Header info for each commands output
+            $out = "$(Get-Date -Format "yyyy-MM-dd @ HH:mm k") :: $($creds.Username) ran :: $cmd"
+            $header = "$("~"*$out.Length)`n$out`n$("~"*$out.Length)`n|CMD Output|`n$("~"* "|CMD Output|".Length)" 
+            Out-File -InputObject $header -FilePath $env:OPERATORLOG_TXT -Append
 
-        Write-Output $("~"*$out.Length)            | Out-File -FilePath $env:OPERATORLOG_TXT -Append
-        Write-Output $out                          | Out-File -FilePath $env:OPERATORLOG_TXT -Append
-        Write-Output $("~"*$out.Length)            | Out-File -FilePath $env:OPERATORLOG_TXT -Append
-        Write-Output "|CMD Output|"                | Out-File -FilePath $env:OPERATORLOG_TXT -Append
-        Write-Output $("~"* "|CMD Output|".Length) | Out-File -FilePath $env:OPERATORLOG_TXT -Append
+        # Write Command Output to Operator Notes
+            Invoke-Expression $cmd | Tee-Object -FilePath $env:OPERATORLOG_TXT -Append
 
-        Invoke-Expression $cmd | Tee-Object -FilePath $env:OPERATORLOG_TXT -Append
+        # Annotate action in Operator CSV
+            New-Object -TypeName [PSCustomObject]@{
+                dateran = if($out -match "\d\d\d\d-\d\d-\d\d"){ $Matches[0] }else{ $null }
+                time    = if($out -match "\d\d:\d\d"){ $Matches[0] }else{ $null }
+                user    = $creds.Username
+                action  = $cmd
+                paa     = $paa
+                targets = $if($issetup){
+                    "(localhost) $((Get-NetIPAddress -InterfaceAlias eth0).IPAddress)"
+                }else {
+                    "($subnet) $($targets.ip -join ",")"
+                }
+            } | Export-Csv -Append -Path $env:OPERATORLOG_CSV
 
-        $csv = New-Object -TypeName [PSCustomObject]@{
-            dateran = if($out -match "\d\d\d\d-\d\d-\d\d"){$Matches[0]}else{$null}
-            time    = if($out -match "\d\d:\d\d"){$Matches[0]}else{$null}
-            user    = $creds.Username
-            action  = $cmd
-            paa     = $paa
-            targets = $if($issetup){
-                "(localhost) $((Get-NetIPAddress -InterfaceAlias eth0).IPAddress)"
-            }else {
-                "($subnet) $($targets.ip -join ",")"
-            }
-        }
-        $csv | Export-Csv -Append -Path $env:OPERATORLOG_CSV
+        }else{ return $targets }
     }
 }
