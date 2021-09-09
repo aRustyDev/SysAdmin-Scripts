@@ -3,7 +3,7 @@ function Export-Json {
     param (
         # Parameter help description
         [Parameter(Mandatory=$true,ValueFromPipeline=$true)]
-        [psobject]
+        [System.Object[]]
         $InputObject,
 
         # Parameter help description
@@ -39,18 +39,31 @@ function Export-Json {
         [string]$Encoding="ascii"
     )
 
-    # Convert to JSON
-        $json = if($Compress){
-            ConvertTo-Json -InputObject $InputObject -Depth $Depth -AsArray -Compress
-        }else{
-            ConvertTo-Json -InputObject $InputObject -Depth $Depth -AsArray
-        }
+    
+    try{
+        # Attempt to Get File
+            if($Append){
+                try{
+                    $InputObject = @(ConvertFrom-Json -InputObject $(Get-Content -Path $FilePath -Raw)) + $InputObject
+                }catch{
+                    SilentlyContinue
+                }
+            }
+        # Convert to JSON
+            $json = if($Compress){
+                ConvertTo-Json -InputObject $InputObject -Depth $Depth -AsArray -Compress
+            }else{
+                ConvertTo-Json -InputObject $InputObject -Depth $Depth -AsArray
+            }
 
-    # Write to file
-        if(($Encoding -ne $null) -and ($Append)){
-            Out-File -InputObject $json -FilePath $FilePath -Append=$Append -Force=$Force -WhatIf=$WhatIf -Encoding $Encoding
-        }else{
-            Out-File -InputObject $json -FilePath $FilePath -Append=$Append -Force=$Force -WhatIf=$WhatIf
-        }
+        # Write to file
+            if(($Encoding -ne $null) -and ($Append)){
+                Out-File -InputObject $json -FilePath $FilePath -Append=$Append -Force=$Force -WhatIf=$WhatIf -Encoding $Encoding
+            }else{
+                Out-File -InputObject $json -FilePath $FilePath -Append=$Append -Force=$Force -WhatIf=$WhatIf
+            }
+    }catch{
+        "Something Broke with Export-Json"
+    }
 
 }
